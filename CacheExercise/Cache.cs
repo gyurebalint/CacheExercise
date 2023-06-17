@@ -114,9 +114,9 @@
             }
             else if (Count == Capacity)
             {
-                var lastRecentlyUsedTicker = AddedTickers[0];
+                var leastRecentlyUsedTicker = AddedTickers[0];
                 AddedTickers.RemoveAt(0);
-                StockPriceCache.Remove(lastRecentlyUsedTicker);
+                StockPriceCache.Remove(leastRecentlyUsedTicker);
 
                 StockPriceCache.Add(ticker, valueToAddToCache);
                 AddedTickers.Add(ticker);
