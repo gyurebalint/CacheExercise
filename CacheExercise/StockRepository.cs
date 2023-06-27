@@ -1,4 +1,6 @@
-﻿namespace CacheExercise
+﻿using CacheExercise.Cache;
+
+namespace CacheExercise
 {
     public interface IStockApi
     {
@@ -19,14 +21,14 @@
         public decimal GetStockPrice(string ticker)
         {
             decimal stockPrice;
-            if (_cache.IsTickerInCache(ticker))
+            if (_cache.Contains(ticker))
             {
-                stockPrice = _cache.GetValueByTicker(ticker);
+                stockPrice = _cache.GetValue(ticker);
             }
             else
             {
                 stockPrice = _stockApi.GetPriceForTicker(ticker);
-                _cache.AddToCache(ticker, stockPrice);
+                _cache.Add(ticker, stockPrice);
             }
 
             return stockPrice;
