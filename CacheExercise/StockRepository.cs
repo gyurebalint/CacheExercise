@@ -10,9 +10,9 @@ namespace CacheExercise
     public class StockRepository
     {
         private readonly IStockApi _stockApi;
-        private readonly ICache _cache;
+        private readonly ICache<string, StockValue> _cache;
 
-        public StockRepository(IStockApi stockApi, ICache cache)
+        public StockRepository(IStockApi stockApi, ICache<string, StockValue> cache)
         {
             _cache = cache;
             _stockApi = stockApi;
@@ -28,7 +28,10 @@ namespace CacheExercise
             else
             {
                 stockPrice = _stockApi.GetPriceForTicker(ticker);
-                _cache.Add(ticker, stockPrice);
+                _cache.Add(ticker, new StockValue()
+                    { 
+                        StockPrice = stockPrice, TimeStamp = DateTime.Now 
+                    });
             }
 
             return stockPrice;

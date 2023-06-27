@@ -1,30 +1,24 @@
 ﻿namespace CacheExercise.Cache
 {
-    public class CacheLRU : ICache
+    public class CacheLRU : ACache
     {
-        private readonly IDateTimeService _dateTimeService;
-        private Dictionary<string, StockValue> StockPriceCache;
         private TimeSpan? ExpirationDate { get; set; }
-
         private int Count;
         private int Capacity;
         private List<string> AddedTickers;
 
-        public CacheLRU(int memoryLimit, IDateTimeService dateTimeService)
+        public CacheLRU(int memoryLimit, IDateTimeService dateTimeService) : base(dateTimeService)
         {
-            _dateTimeService = dateTimeService;
-            StockPriceCache = new Dictionary<string, StockValue>();
-
             ExpirationDate = null;
             Capacity = memoryLimit;
             AddedTickers = new List<string>();
         }
 
-        public void Add(string ticker, decimal stockPrice)
+        public override void Add(string ticker, StockValue stockValue)
         {
             var valueToAddToCache = new StockValue()
             {
-                StockPrice = stockPrice,
+                StockPrice = stockValue.StockPrice,
                 TimeStamp = _dateTimeService.Now()
             };
 
@@ -54,7 +48,7 @@
             }
         }
 
-        public decimal GetValue(string ticker)
+        public override decimal GetValue(string ticker)
         {
             if (StockPriceCache.ContainsKey(ticker))
                 return StockPriceCache[ticker].StockPrice;
@@ -62,7 +56,7 @@
             throw new KeyNotFoundException($"Ticker: {ticker} is not present in the cache as key. Use the IsTickerInCache(ticker) function to avoid this exception.");
         }
 
-        public bool Contains(string ticker)
+        public override bool Contains(string ticker)
         {
             if (StockPriceCache.ContainsKey(ticker))
             {

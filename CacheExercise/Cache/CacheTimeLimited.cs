@@ -1,29 +1,21 @@
 ﻿namespace CacheExercise.Cache
 {
-    public class CacheTimeLimited : ICache
+    public class CacheTimeLimited : ACache
     {
-        private readonly IDateTimeService _dateTimeService;
-        private Dictionary<string, StockValue> StockPriceCache;
         private TimeSpan? ExpirationDate { get; set; }
-
         private int Count;
-        private int Capacity;
-        private List<string> AddedTickers;
+        private int Capacity = 0;
+        private List<string> AddedTickers = new List<string>();
 
-        public CacheTimeLimited(IDateTimeService dateTimeService, TimeSpan? timeLimit)
+        public CacheTimeLimited(IDateTimeService dateTimeService, TimeSpan? timeLimit) : base(dateTimeService)
         {
-            _dateTimeService = dateTimeService;
-            StockPriceCache = new Dictionary<string, StockValue>();
             ExpirationDate = timeLimit;
-
-            Capacity = 0;
-            AddedTickers = new List<string>();
         }
-        public void Add(string ticker, decimal stockPrice)
+        public override void Add(string ticker, StockValue stockValue)
         {
             var valueToAddToCache = new StockValue()
             {
-                StockPrice = stockPrice,
+                StockPrice = stockValue.StockPrice,
                 TimeStamp = _dateTimeService.Now()
             };
 
@@ -31,7 +23,7 @@
             Count++;
         }
 
-        public bool Contains(string ticker)
+        public override bool Contains(string ticker)
         {
             if (StockPriceCache.ContainsKey(ticker))
             {
@@ -47,7 +39,7 @@
             return true;
         }
 
-        public decimal GetValue(string ticker)
+        public override decimal GetValue(string ticker)
         {
             if (StockPriceCache.ContainsKey(ticker))
                 return StockPriceCache[ticker].StockPrice;
