@@ -9,9 +9,9 @@
                 case CacheConfigurationSetting.MemoryLimited:
                     return CreateLRUCache(memoryLimit, dateTimeService);
                 case CacheConfigurationSetting.TimeLimited:
-                    return new CacheTimeLimited(dateTimeService, timeLimit);
+                    return CreateTimeLimitedCache(dateTimeService, timeLimit);
                 default:
-                    throw new NotImplementedException();
+                    return new CacheSimple(dateTimeService);
             }
         }
 
