@@ -11,7 +11,7 @@
                 case CacheConfigurationSetting.TimeLimited:
                     return new CacheTimeLimited(dateTimeService, timeLimit);
                 default:
-                    throw new NotImplementedException();
+                    return new CacheSimple(dateTimeService);
             }
         }
 
